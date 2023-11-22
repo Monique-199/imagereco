@@ -76,13 +76,12 @@ public class SIGNUp extends AppCompatActivity {
         String password = PasswordEditText.getText().toString();
         String confirmPassword = ConfirmPasswordEditText.getText().toString();
         String userName = UsernameEditText.getText().toString();
-        String phoneNumber = PhoneEditText .getText().toString();
+        String phoneNumber = PhoneEditText.getText().toString();
         String shortBio = shortBioEditText.getText().toString();
-        String Skills = skillsEditText.getText().toString();
-        String gender= spinner.getSelectedItem().toString();
+        String skills = skillsEditText.getText().toString();
+        String gender = spinner.getSelectedItem().toString();
 
-
-        boolean isValid = validateInput(email, password, confirmPassword, userName,Skills,shortBio, phoneNumber);
+        boolean isValid = validateInput(email, password, confirmPassword, userName, skills, shortBio, phoneNumber);
 
         if (isValid) {
             progressIndicator(true);
@@ -94,31 +93,35 @@ public class SIGNUp extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 if (user != null) {
+                                    User newUser = new User(userName, email, password, confirmPassword, gender, skills, shortBio);
+
+                                    // Save user to Firestore first
+                                    saveUserToFirestore(newUser);
+
                                     // Send email verification
                                     user.sendEmailVerification()
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> emailTask) {
                                                     if (emailTask.isSuccessful()) {
-                                                        reusableClass.showToast(SIGNUp.this,"Account created successfully. Check your email to verify.");
+                                                        reusableClass.showToast(SIGNUp.this, "Account created successfully. Check your email to verify.");
                                                         finish();
-                                                        // Email sent successfully
                                                     } else {
-                                                        reusableClass.showToast(SIGNUp.this,"Failed to send verification email.");
+                                                        reusableClass.showToast(SIGNUp.this, "Failed to send verification email.");
                                                     }
                                                 }
                                             });
                                 }
-                                User newUser = new User(userName,email,password,confirmPassword,gender,Skills,shortBio);
-                                saveUserToFirestore(newUser);
                             } else {
-                                reusableClass.showToast(SIGNUp.this,"Account creation failed: " + task.getException().getMessage());
+                                reusableClass.showToast(SIGNUp.this, "Account creation failed: " + task.getException().getMessage());
                             }
                         }
                     });
         }
     }
+
     void saveUserToFirestore(User user) {
+        firestore = FirebaseFirestore.getInstance();
         firestore.collection("users")
                 .add(user)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
