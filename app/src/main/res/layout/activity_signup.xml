@@ -15,7 +15,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:text="LinkedN SIGN UP"
         android:textSize="30sp"
         android:textStyle="bold"
         android:gravity="center"
@@ -31,7 +31,6 @@
         android:gravity="center"
         android:layout_below="@+id/LinkedN_textView"
         android:orientation="vertical">
-
         <EditText
             android:layout_width="match_parent"
             android:hint="User Name"
@@ -148,30 +147,6 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             />
-        <LinearLayout
-            android:id="@+id/profilePictureLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <!-- ImageView to display selected profile picture -->
-            <ImageView
-                android:id="@+id/profileImageView"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/default_profile_image"
-                android:scaleType="centerCrop"
-                />
-
-            <!-- Button to trigger image selection -->
-            <Button
-                android:id="@+id/chooseProfilePictureButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Choose Profile Picture" />
-        </LinearLayout>
 
         <Button
             android:layout_marginTop="30dp"
@@ -198,7 +173,7 @@
             android:layout_marginBottom="50dp"
             android:text="Already have an Account? LOGIN"
             />
-
+            />
 
     </LinearLayout>
 
