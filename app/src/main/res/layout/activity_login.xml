@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_margin="20dp"
+    android:layout_height="match_parent"
+    tools:context=".Authentication.Login">
+     <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="LinkedN"
+         android:textSize="30sp"
+         android:textStyle="bold"
+         android:gravity="center"
+         android:layout_marginTop="20dp"
+            android:id="@+id/LinkedN_textView"/>
+         />
+
+    <LinearLayout
+        android:id="@+id/linearLayout_logo"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@+id/LinkedN_textView"
+        android:orientation="vertical">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:hint="Input Email"
+            android:background="@drawable/cornersshaped"
+            android:id="@+id/Login_Email_editText"
+            android:layout_marginBottom="20dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Input_password"
+            android:background="@drawable/cornersshaped"
+            android:inputType="textPassword"
+            android:id="@+id/Login_Password_editText"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+             android:paddingTop="8dp"
+             android:paddingBottom="8dp"
+        />
+
+        <Button
+            android:layout_marginTop="30dp"
+            android:layout_width="150dp"
+            android:gravity="center"
+            android:text="LOGIN"
+            android:textStyle="bold"
+            android:textSize="25sp"
+            android:id="@+id/Login_button"
+            android:layout_height="wrap_content"/>
+           <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/SignUp_textView"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            android:text="Don't have an account? Sign Up"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>
