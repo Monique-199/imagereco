@@ -157,6 +157,12 @@
             android:textSize="25sp"
             android:id="@+id/SignUp_button"
             android:layout_height="wrap_content"/>
+        <ProgressBar
+            android:id="@+id/progress_circular"
+            android:layout_width="24dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

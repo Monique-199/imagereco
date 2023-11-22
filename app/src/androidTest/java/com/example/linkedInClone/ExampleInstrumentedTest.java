@@ -1,4 +1,4 @@
-package com.example.screendesign;
+package com.example.linkedInClone;
 
 import android.content.Context;
 

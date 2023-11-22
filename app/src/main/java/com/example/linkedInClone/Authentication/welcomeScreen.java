@@ -1,4 +1,4 @@
-package com.example.screendesign.Authentication;
+package com.example.linkedInClone.Authentication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.example.screendesign.R;
+import com.example.linkedInClone.R;
 
 public class welcomeScreen extends AppCompatActivity {
     TextView linkedInTextView;
