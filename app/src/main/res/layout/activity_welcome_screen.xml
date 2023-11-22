@@ -19,7 +19,7 @@
             android:layout_height="150dp"
             android:layout_gravity="center"
             android:id="@+id/logo"
-            android:src="@drawable/linkedin"/>
+            android:src="@drawable/linkdn"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/linearLayout_linkdN"
@@ -32,7 +32,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:text="LinkedIn"
+            android:text="LinkdN"
             android:layout_marginTop="40dp"
             android:gravity="center"
             android:id="@+id/LinkedN_textView"
