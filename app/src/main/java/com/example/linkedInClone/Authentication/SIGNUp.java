@@ -1,17 +1,23 @@
 package com.example.linkedInClone.Authentication;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
@@ -33,6 +39,9 @@ public class SIGNUp extends AppCompatActivity {
     Button SignUpButton;
     Spinner spinner;
     ProgressBar progressBar;
+    Uri selectedImageUri;
+    ImageView imageView;
+    Button chooseProfilePictureButton;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firestore;
     ReusableClass reusableClass = new ReusableClass();
@@ -55,7 +64,13 @@ public class SIGNUp extends AppCompatActivity {
         skillsEditText = findViewById(R.id.skills_editText);
         GenderEditText = findViewById(R.id.Gender_editText);
         progressBar = findViewById(R.id.progress_circular);
+        imageView = findViewById(R.id.profileImageView);
+        chooseProfilePictureButton = findViewById(R.id.chooseProfilePictureButton);
         spinner =findViewById(R.id.gender_spinner);
+        chooseProfilePictureButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            chooseProfilePictureLauncher.launch(intent);
+        });
         String[] options = {"Male", "Female","Non-Binary","Other"};
         ArrayAdapter<String> adapter = new
                 ArrayAdapter<>(SIGNUp.this, android.R.layout.
@@ -177,4 +192,17 @@ public class SIGNUp extends AppCompatActivity {
             SignUpButton.setEnabled(true);
         }
     }
+    final ActivityResultLauncher<Intent> chooseProfilePictureLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // Handle the result, e.g., get the selected image URI
+                    Intent data = result.getData();
+                    if (data != null && data.getData() != null) {
+                        selectedImageUri = data.getData();
+                        imageView.setImageURI(selectedImageUri);
+                    }
+                }
+            }
+    );
 }
