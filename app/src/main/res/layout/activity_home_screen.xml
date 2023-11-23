@@ -11,35 +11,51 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/Lecturer_AllRegStudents_toolbar"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:title="LinkedIn"
-            app:titleTextAppearance="@style/ToolbarTitle"
-            app:titleTextColor="@android:color/white">
+            android:layout_height="wrap_content">
 
-        </androidx.appcompat.widget.Toolbar>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/Lecturer_AllRegStudents_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:title="LinkedIn"
+                app:titleTextAppearance="@style/ToolbarTitle"
+                app:titleTextColor="@android:color/white"/>
 
+            <!-- Profile Picture -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/myCardView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:cardCornerRadius="80dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp">
+
+                <ImageView
+                    android:id="@+id/profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/default_profile_image"
+                    android:scaleType="centerCrop"/>
+            </androidx.cardview.widget.CardView>
+
+        </RelativeLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
+
     <LinearLayout
         android:id="@+id/profile_info_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:padding="10dp"
+        android:layout_marginTop="50dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <!-- Profile Picture -->
-        <ImageView
-            android:id="@+id/profile_picture"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/default_profile_image"
-            android:scaleType="centerCrop"
-            android:layout_marginEnd="16dp"/>
+
 
         <LinearLayout
             android:layout_width="0dp"
@@ -72,25 +88,43 @@
                 android:text="+123 456 7890"
                 android:textSize="14sp"/>
 
+            <TextView
+                android:id="@+id/skills"
+                android:paddingTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Skills"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                />
+
             <!-- Short Bio -->
             <TextView
                 android:id="@+id/short_bio"
-                android:paddingTop="20dp"
+                android:paddingTop="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Short Bio: Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                android:textSize="14sp"
-                android:maxLines="2"/>
+                android:textSize="14sp" />
+            <TextView
+                android:id="@+id/friends"
+                android:paddingTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Friends"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                />
 
         </LinearLayout>
-    </LinearLayout>
 
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:paddingTop="150dp">
+        android:paddingTop="350dp">
 
         <FrameLayout
             android:id="@+id/Lecturer_AllRegStudents"
@@ -117,13 +151,13 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:layout_below="@+id/search_view"
-                        android:id="@+id/admin_recyclerView"
+                        android:id="@+id/all_users"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="45dp"
                         android:clipToPadding="false"
                         android:paddingTop="8dp"
-                        android:paddingBottom="8dp" />
+                        android:paddingBottom="8dp"
+                        />
 
                 </LinearLayout>
             </LinearLayout>

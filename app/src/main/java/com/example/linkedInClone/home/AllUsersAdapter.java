@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.linkedInClone.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class AllUsersAdapter extends RecyclerView.Adapter<AllUsersAdapter.AllUse
 
     public interface OnItemClickListener {
         void onItemClick(UserProfile user);
+        void onCallButtonClick(UserProfile user);
+        void onEmailButtonClick(UserProfile user);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -41,27 +44,47 @@ public class AllUsersAdapter extends RecyclerView.Adapter<AllUsersAdapter.AllUse
         UserProfile user = userList.get(position);
 
         // Bind data to the ViewHolder's views
-        holder.profileImageView.setImageResource(user.getProfilePicture());
-        holder.usernameTextView.setText(user.getUsername());
+        if (user.getProfilePictureUrl() != null) {
+            Picasso.get().load(user.getProfilePictureUrl()).into(holder.profileImageView);
+        }
+        holder.usernameTextView.setText(user.getUserName());
         holder.genderTextView.setText(user.getGender());
         holder.phoneNumberTextView.setText(user.getPhoneNumber());
         holder.shortBioTextView.setText(user.getShortBio());
+        holder.skillsTextView.setText(user.getSkills());
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onItemClick(user);
             }
         });
+        holder.callButton.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCallButtonClick(user);
+            }
+        });
+
+        // Configure Email Button
+        holder.emailButton.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onEmailButtonClick(user);
+            }
+        });
+    }
+    public void setUserList(List<UserProfile> userList) {
+        this.userList = userList;
     }
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        return userList != null ? userList.size() : 0;
     }
 
     public static class AllUsersViewHolder extends RecyclerView.ViewHolder {
         ImageView profileImageView;
-        TextView usernameTextView, genderTextView, phoneNumberTextView, shortBioTextView;
+        ImageView callButton;
+        ImageView emailButton;
+        TextView usernameTextView, genderTextView, phoneNumberTextView, shortBioTextView, skillsTextView;
 
         public AllUsersViewHolder(View itemView) {
             super(itemView);
@@ -70,6 +93,9 @@ public class AllUsersAdapter extends RecyclerView.Adapter<AllUsersAdapter.AllUse
             genderTextView = itemView.findViewById(R.id.genderTextView);
             phoneNumberTextView = itemView.findViewById(R.id.phoneTextView);
             shortBioTextView = itemView.findViewById(R.id.shortBioTextView);
+            skillsTextView = itemView.findViewById(R.id.skillsTextView);
+            callButton = itemView.findViewById(R.id.callButton);
+            emailButton = itemView.findViewById(R.id.emailButton);
         }
     }
 }

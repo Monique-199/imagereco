@@ -1,48 +1,51 @@
 package com.example.linkedInClone;
 
 public class User {
-    String UserName, Email, passowrd, confirmPassword, gender, ShortBio, Skills;
+    String userName, email, gender, shortBio, skills, profilePictureUrl, phoneNumber;
 
-    public User(String userName, String email, String passowrd, String confirmPassword, String gender, String shortBio, String skills) {
-        this.UserName = userName;
-        this.Email = email;
-        this.passowrd = passowrd;
-        this.confirmPassword = confirmPassword;
+    public User() {
+    }
+
+    public User(String userName, String email, String gender, String shortBio, String skills, String profilePictureUrl, String phoneNumber) {
+        this.userName = userName;
+        this.email = email;
         this.gender = gender;
-        ShortBio = shortBio;
-        Skills = skills;
+        this.phoneNumber = phoneNumber;
+        this.shortBio = shortBio;
+        this.skills = skills;
+        this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public String getUserName() {
-        return UserName;
+        return userName;
     }
 
     public void setUserName(String userName) {
-        UserName = userName;
+        this.userName = userName;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
-    }
-
-    public String getPassowrd() {
-        return passowrd;
-    }
-
-    public void setPassowrd(String passowrd) {
-        this.passowrd = passowrd;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
+        this.email = email;
     }
 
     public String getGender() {
@@ -54,18 +57,18 @@ public class User {
     }
 
     public String getShortBio() {
-        return ShortBio;
+        return shortBio;
     }
 
     public void setShortBio(String shortBio) {
-        ShortBio = shortBio;
+        this.shortBio = shortBio;
     }
 
     public String getSkills() {
-        return Skills;
+        return skills;
     }
 
     public void setSkills(String skills) {
-        Skills = skills;
+        this.skills = skills;
     }
 }

@@ -1,31 +1,33 @@
 package com.example.linkedInClone.home;
 
-import java.util.List;
 public class UserProfile {
-    private int profilePicture; // Resource ID of the profile picture
-    private String username;
+    private String profilePictureUrl; // Resource ID of the profile picture
+    private String userName;
     private String gender;
     private String phoneNumber;
     private String email;
     private String shortBio;
-    private List<String> skills;
+    private String skills;
 
-    public UserProfile(int profilePicture, String username, String gender, String phoneNumber,String email,String shortBio, List<String> skills) {
-        this.profilePicture = profilePicture;
-        this.username = username;
+    public UserProfile(String profilePicture, String username, String gender, String phoneNumber,String email,String shortBio, String skills) {
+        this.profilePictureUrl = profilePicture;
+        this.userName = username;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.shortBio = shortBio;
         this.skills = skills;
     }
+    public UserProfile(){
 
-    public void setProfilePicture(int profilePicture) {
-        this.profilePicture = profilePicture;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public void setGender(String gender) {
@@ -40,7 +42,7 @@ public class UserProfile {
         this.shortBio = shortBio;
     }
 
-    public void setSkills(List<String> skills) {
+    public void setSkills(String skills) {
         this.skills = skills;
     }
 
@@ -52,12 +54,12 @@ public class UserProfile {
         this.email = email;
     }
 
-    public int getProfilePicture() {
-        return profilePicture;
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
     public String getGender() {
@@ -72,7 +74,7 @@ public class UserProfile {
         return shortBio;
     }
 
-    public List<String> getSkills() {
+    public String getSkills() {
         return skills;
     }
 }

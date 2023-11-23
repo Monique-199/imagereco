@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.linkedInClone.MainActivity;
 import com.example.linkedInClone.R;
 import com.example.linkedInClone.ReusableClass;
+import com.example.linkedInClone.home.homeScreen;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -44,7 +45,8 @@ public class Login extends AppCompatActivity {
         PasswordEditText = findViewById(R.id.Login_Password_editText);
         firebaseAuth = FirebaseAuth.getInstance();
         SignUpTextview.setOnClickListener(v -> {
-            startActivity(new Intent(Login.this, SIGNUp.class));
+            startActivity(new Intent(Login.this, SignUpActivity.class));
+            finish();
         });
         LoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +80,8 @@ public class Login extends AppCompatActivity {
                     if (currentUser != null) {
                         if (currentUser.isEmailVerified()) {
                             reusableClass.showToast(Login.this, "Successfully Logged In");
-                            startActivity(new Intent(Login.this, MainActivity.class));
+                            startActivity(new Intent(Login.this, homeScreen.class));
+                            finish();
                         } else {
                             // Email not verified
                             reusableClass.showToast(Login.this, "Please verify email");
