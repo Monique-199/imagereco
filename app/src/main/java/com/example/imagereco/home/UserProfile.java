@@ -1,4 +1,4 @@
-package com.example.linkedInClone.home;
+package com.example.imagereco.home;
 
 public class UserProfile {
     private String profilePictureUrl; // Resource ID of the profile picture

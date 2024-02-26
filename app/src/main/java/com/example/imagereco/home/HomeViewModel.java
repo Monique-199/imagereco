@@ -1,11 +1,10 @@
-package com.example.linkedInClone.home;
+package com.example.imagereco.home;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.example.linkedInClone.User;
+import com.example.imagereco.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -38,6 +37,10 @@ public class HomeViewModel extends ViewModel {
                 }
             });
         }
+    }
+
+    public void signOut() {
+        auth.signOut();
     }
 }
 

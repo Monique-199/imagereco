@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "screendesign"
+rootProject.name = "imagereco"
 include(":app")
  

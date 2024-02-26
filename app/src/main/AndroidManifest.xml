@@ -5,7 +5,12 @@
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -17,27 +22,36 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Screendesign"
         tools:targetApi="31">
+
+        <activity
+            android:name=".Authentication.ForgotPassword"
+            android:exported="false" />
+
         <activity
             android:name=".home.homeScreen"
-            android:exported="false" />
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
         <activity
             android:name=".Authentication.SignUpActivity"
             android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
+
         <activity
             android:name=".Authentication.Login"
             android:exported="false" />
-        <activity
-            android:name=".Authentication.welcomeScreen"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
         </activity>
+
     </application>
 
 </manifest>

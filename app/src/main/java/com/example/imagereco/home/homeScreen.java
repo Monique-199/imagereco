@@ -1,0 +1,301 @@
+package com.example.imagereco.home;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.imagereco.Authentication.Login;
+import com.example.imagereco.R;
+import com.example.imagereco.User;
+import com.example.imagereco.ml.ConvertedModel3;
+
+import org.tensorflow.lite.DataType;
+import org.tensorflow.lite.support.image.TensorImage;
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+
+import java.io.BufferedReader;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class homeScreen extends AppCompatActivity {
+    private static final int PICTURE_RESULT = 1;
+    private static final int CAMERA_PERMISSION_CODE = 100;
+    private ImageView pictureHolder;
+    private Uri selectedImageUri;
+    private Button takeAphotoButton, choosePictureFromFileButton, analysePhotoButton;
+    private Button logOutBtn;
+    private int ImageSize = 64;
+    private TextView fullname, result,email;
+    private Bitmap bitmap;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home_screen);
+        String[] labels = new String[30];
+        int cnt = 0;
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(getAssets().open("labels.txt")));
+            String line = bufferedReader.readLine();
+            while (line != null && cnt < 30) {
+                labels[cnt] = line;
+                cnt++;
+                line = bufferedReader.readLine();  // Read the next line
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        // Initialize UI elements
+        pictureHolder = findViewById(R.id.photo_taken_image_view);
+        logOutBtn = findViewById(R.id.log_out_btn);
+        fullname = findViewById(R.id.fullname);
+        email = findViewById(R.id.email);
+        result=findViewById(R.id.resulttxt);
+        takeAphotoButton = findViewById(R.id.take_a_photo);
+        analysePhotoButton = findViewById(R.id.analyse_photo_btn);
+        choosePictureFromFileButton = findViewById(R.id.choose_a_photo);
+
+        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel.getUserData().observe(this, this::updateUi);
+
+        logOutBtn.setOnClickListener(onProfilePicClick -> {
+            // Log out
+            new AlertDialog.Builder(this)
+                    .setTitle("Logout")
+                    .setMessage("Are you sure you want to logout?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        // User confirmed, perform logout action here
+                        homeViewModel.signOut();
+                        startActivity(new Intent(homeScreen.this, Login.class));
+                        finish();
+                    })
+                    .setNegativeButton("No", (dialog, which) -> {
+                        // User canceled the logout
+                        dialog.dismiss();
+                    })
+                    .show();
+        });
+
+        takeAphotoButton.setOnClickListener(onClick -> {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+            } else {
+                openCamera();
+            }
+        });
+
+        choosePictureFromFileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            chooseProfilePictureLauncher.launch(intent);
+        });
+
+        analysePhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (bitmap != null) {
+                    try {
+                        ConvertedModel3 model = ConvertedModel3.newInstance(homeScreen.this);
+
+                        // Creates inputs for reference.
+                        TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 64, 64, 3}, DataType.FLOAT32);
+
+                        // Normalize and load the buffer
+                        TensorImage tensorImage = TensorImageExtensions.fromTensorBuffer(inputFeature0);
+                        tensorImage = normalizeAndLoadBuffer(bitmap, tensorImage);
+
+                        // Runs model inference and gets result.
+                        ConvertedModel3.Outputs outputs = model.process(inputFeature0);
+                        TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+                        result.setText(labels[getMax(outputFeature0.getFloatArray())] + "");
+
+                        // Releases model resources if no longer used.
+                        model.close();
+                    } catch (IOException e) {
+                        // TODO Handle the exception
+                    }
+                } else {
+                    Toast.makeText(homeScreen.this, "Bitmap is null. Please capture or choose an image first.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+    int getMax(float[] arr){
+        int max=0;
+        for(int i=0; i<arr.length; i++){
+            if(arr[i]>arr[max]) max=i;
+
+        }
+        return max;
+    }
+
+
+    private final ActivityResultLauncher<Intent> chooseProfilePictureLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null && data.getData() != null) {
+                        selectedImageUri = data.getData();
+                        pictureHolder.setImageURI(selectedImageUri);
+                        bitmap = getBitmapFromUri(selectedImageUri);
+                    }
+                }
+            }
+    );
+    private TensorImage normalizeAndLoadBuffer(Bitmap originalBitmap, TensorImage tensorImage) {
+        int width = originalBitmap.getWidth();
+        int height = originalBitmap.getHeight();
+
+        // Create a mutable copy of the original bitmap
+        Bitmap mutableBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+        // Normalize pixel values to the range [0, 1]
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int pixel = mutableBitmap.getPixel(x, y);
+
+                // Extract RGB components
+                int red = Color.red(pixel);
+                int green = Color.green(pixel);
+                int blue = Color.blue(pixel);
+
+                // Normalize values to the range [0, 1]
+                float normalizedRed = red / 255.0f;
+                float normalizedGreen = green / 255.0f;
+                float normalizedBlue = blue / 255.0f;
+
+                // Set the normalized color back to the mutableBitmap
+                int normalizedPixel = Color.rgb((int) (normalizedRed * 255),
+                        (int) (normalizedGreen * 255),
+                        (int) (normalizedBlue * 255));
+                mutableBitmap.setPixel(x, y, normalizedPixel);
+            }
+        }
+
+        // Load the normalized mutableBitmap to the TensorImage
+        tensorImage.load(mutableBitmap);
+
+        return tensorImage;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void updateUi(User user) {
+        if (user != null) {
+            fullname.setText(user.getFirstname() + " " + user.getLastname());
+            email.setText(user.getEmail());
+        }
+    }
+
+    private void classifyImage(Bitmap image) {
+        // Your classification logic here
+        // ...
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) {
+        try {
+            if (uri != null) {
+                ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
+                if (parcelFileDescriptor != null) {
+                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                    Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+                    parcelFileDescriptor.close();
+                    return bitmap;
+                }
+            } else {
+                Toast.makeText(this, "URI is null", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error loading bitmap", Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICTURE_RESULT) {
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
+                    Bundle b = data.getExtras();
+                    if (b != null) {
+                        Bitmap pic = (Bitmap) b.get("data");
+                        if (pic != null) {
+                            // Set the bitmap to your class variable
+                            bitmap = pic;
+                            pictureHolder.setImageBitmap(pic);
+                            pictureHolder.invalidate();
+                            classifyImage(pic);
+                            return; // Exit the method as the bitmap is set
+                        }
+                    }
+                }
+
+                Uri dat = data != null ? data.getData() : null;
+                if (dat != null) {
+                    Bitmap image = getBitmapFromUri(dat);
+                    if (image != null) {
+                        // Set the bitmap to your class variable
+                       // bitmap = Bitmap.createScaledBitmap(bitmap, 64, 64, true);
+                        bitmap = image;
+                        pictureHolder.setImageBitmap(image);
+                        image = Bitmap.createScaledBitmap(image, ImageSize, ImageSize, false);
+                        classifyImage(image);
+                        return; // Exit the method as the bitmap is set
+                    }
+                }
+
+                // Handle cases where both data.getExtras() and data.getData() are null
+                Toast.makeText(this, "No valid image data", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                // Handle canceled result
+                Toast.makeText(this, "Image capture canceled", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, PICTURE_RESULT);
+    }
+}

@@ -1,4 +1,4 @@
-package com.example.linkedInClone.Authentication;
+package com.example.imagereco.Authentication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,10 +12,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.linkedInClone.MainActivity;
-import com.example.linkedInClone.R;
-import com.example.linkedInClone.ReusableClass;
-import com.example.linkedInClone.home.homeScreen;
+import com.example.imagereco.R;
+import com.example.imagereco.ReusableClass;
+import com.example.imagereco.home.homeScreen;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -25,12 +24,13 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
-    TextView SignUpTextview;
-    Button LoginButton;
+    TextView signUpTextView;
+    TextView forgotPasswordTextView;
+    Button loginButton;
     ProgressBar progressBar;
     FirebaseAuth firebaseAuth;
     ReusableClass reusableClass = new ReusableClass();
-    EditText EmailEditText, PasswordEditText;
+    EditText emailEditText, passwordEditText;
 
 
     @SuppressLint("MissingInflatedId")
@@ -38,26 +38,31 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        SignUpTextview = findViewById(R.id.SignUp_textView);
-        LoginButton = findViewById(R.id.Login_button);
+        signUpTextView = findViewById(R.id.SignUp_textView);
+        loginButton = findViewById(R.id.loginButton);
         progressBar = findViewById(R.id.progress_circular);
-        EmailEditText = findViewById(R.id.Login_Email_editText);
-        PasswordEditText = findViewById(R.id.Login_Password_editText);
+        emailEditText = findViewById(R.id.Login_Email_editText);
+        passwordEditText = findViewById(R.id.textPassword);
+        forgotPasswordTextView = findViewById(R.id.forgot_password);
         firebaseAuth = FirebaseAuth.getInstance();
-        SignUpTextview.setOnClickListener(v -> {
+        signUpTextView.setOnClickListener(v -> {
             startActivity(new Intent(Login.this, SignUpActivity.class));
-            finish();
         });
-        LoginButton.setOnClickListener(new View.OnClickListener() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 signIn();
             }
         });
+
+        forgotPasswordTextView.setOnClickListener(onclick -> {
+            startActivity(new Intent(Login.this, ForgotPassword.class));
+        });
     }
+
     void signIn() {
-        String email = EmailEditText.getText().toString();
-        String password = PasswordEditText.getText().toString();
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
 
         boolean isValid = validateInput(email, password);
         if (!isValid) {
@@ -66,6 +71,7 @@ public class Login extends AppCompatActivity {
             loginUserToFirebase(email, password);
         }
     }
+
     void loginUserToFirebase(String email, String password) {
         showProgressBar(true);
 
@@ -78,14 +84,9 @@ public class Login extends AppCompatActivity {
                     FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
                     if (currentUser != null) {
-                        if (currentUser.isEmailVerified()) {
-                            reusableClass.showToast(Login.this, "Successfully Logged In");
-                            startActivity(new Intent(Login.this, homeScreen.class));
-                            finish();
-                        } else {
-                            // Email not verified
-                            reusableClass.showToast(Login.this, "Please verify email");
-                        }
+                        reusableClass.showToast(Login.this, "Successfully Logged In");
+                        startActivity(new Intent(Login.this, homeScreen.class));
+                        finish();
                     }
                 } else {
                     // Handle different failure cases explicitly
@@ -109,23 +110,24 @@ public class Login extends AppCompatActivity {
     }
 
     boolean validateInput(String email, String password) {
-        if (email.isEmpty()&&password.isEmpty()) {
-            EmailEditText.setError("Please enter email");
-            PasswordEditText.setError("Please enter password");
+        if (email.isEmpty() && password.isEmpty()) {
+            emailEditText.setError("Please enter email");
+            passwordEditText.setError("Please enter password");
             return false;
-        }else if(password.isEmpty()) {
+        } else if (password.isEmpty()) {
 
             return false;
         }
         return true;
     }
+
     void showProgressBar(boolean inProgress) {
         if (inProgress) {
             progressBar.setVisibility(View.VISIBLE);
-            LoginButton.setVisibility(View.GONE);
+            loginButton.setVisibility(View.GONE);
         } else {
             progressBar.setVisibility(View.GONE);
-            LoginButton.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.VISIBLE);
         }
     }
 }

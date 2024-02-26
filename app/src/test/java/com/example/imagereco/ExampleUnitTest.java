@@ -1,4 +1,4 @@
-package com.example.linkedInClone;
+package com.example.imagereco;
 
 import org.junit.Test;
 
